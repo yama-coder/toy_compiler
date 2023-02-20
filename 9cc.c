@@ -219,6 +219,8 @@ void gen(Node *node) {
   printf("  push rax\n");
 }
 
+// TODO: 乗除がうまくいかない(segmentation fault)ので修正
+// Nodeの初期化がうまくいってない？
 int main(int argc, char **argv) {
   if (argc != 2) {
     error_at(argv[1], "引数の個数が正しくありません");
