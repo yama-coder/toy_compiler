@@ -90,7 +90,6 @@ bool at_eof() {
   return token->kind == TK_EOF;
 }
 
-// 新しいトークンを作成してcurに繋げる
 Token *new_token(TokenKind kind, Token *cur, char *str) {
   Token *tok = calloc(1, sizeof(Token));
   tok->kind = kind;
@@ -99,20 +98,20 @@ Token *new_token(TokenKind kind, Token *cur, char *str) {
   return tok;
 }
 
-// 入力文字列pをトークナイズしてそれを返す
-Token *tokenize(char *p) {
+// 新しいトークンを作成してcurに繋げる
+Token *tokenize() {
+  char *p = user_input;
   Token head;
   head.next = NULL;
   Token *cur = &head;
 
   while (*p) {
-    // 空白文字をスキップ
     if (isspace(*p)) {
       p++;
       continue;
     }
 
-    if (*p == '+' || *p == '-') {
+    if (strchr("+-*/()", *p)) {
       cur = new_token(TK_RESERVED, cur, p++);
       continue;
     }
@@ -123,7 +122,7 @@ Token *tokenize(char *p) {
       continue;
     }
 
-    error_at(token->str, "トークナイズできません");
+    error_at(p, "invalid token");
   }
 
   new_token(TK_EOF, cur, p);
@@ -226,10 +225,9 @@ int main(int argc, char **argv) {
     error_at(argv[1], "引数の個数が正しくありません");
     return 1;
   }
-
   // トークナイズしてパースする
   user_input = argv[1];
-  token = tokenize(user_input);
+  token = tokenize();
   Node *node = expr();
 
   // アセンブリの前半部分を出力
@@ -246,3 +244,4 @@ int main(int argc, char **argv) {
   printf("  ret\n");
   return 0;
 }
+
