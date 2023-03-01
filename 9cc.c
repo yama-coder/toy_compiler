@@ -119,8 +119,7 @@ Token *tokenize() {
   Token *cur = &head;
 
   while (*p) {
-    if (isspace(*p)) {
-      printf("is space\n");
+    if (isspace(*p)) { 
       p++;
       continue;
     }
