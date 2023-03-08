@@ -1,3 +1,11 @@
+#include <ctype.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
 //----------------------------------------------------------------------
 // 型宣言（Type declaration） 
 //----------------------------------------------------------------------
@@ -49,3 +57,20 @@ char *user_input;
 // プロトタイプ宣言（Prototype declaration）
 //----------------------------------------------------------------------
 void error_at(char *loc, char *fmt, ...);
+bool consume(char *op);
+void expect(char *op);
+int expect_number();
+bool at_eof();
+Token *new_token(TokenKind kind, Token *cur, char *str, int len);
+bool startswith(char *p, char *q);
+Node *new_node(NodeKind kind, Node *lhs, Node *rhs);
+Node *new_node_num(int val);
+Node *expr();
+Node *equality();
+Node *relational();
+Node *add();
+Node *mul();
+Node *unary();
+Node *primary();
+Token *tokenize();
+void gen(Node *node);

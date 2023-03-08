@@ -1,8 +1,0 @@
-char p is 3
-is digit: 3
-.intel_syntax noprefix
-.globl main
-main:
-  push 3
-  pop rax
-  ret
