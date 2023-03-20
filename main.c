@@ -7,6 +7,15 @@
 #include <string.h>
 
 // エラーを報告するための関数
+void error(char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  vfprintf(stderr, fmt, ap);
+  fprintf(stderr, fmt, ap);
+  exit(1);
+}
+
+// エラーを報告するための関数
 // printfと同じ引数を取る
 void error_at(char *loc, char *fmt, ...) {
   va_list ap;
@@ -30,18 +39,30 @@ int main(int argc, char **argv) {
   // トークナイズしてパースする
   user_input = argv[1];
   token = tokenize();
-  Node *node = expr();
+  program();
 
   // アセンブリの前半部分を出力
   printf(".intel_syntax noprefix\n");
   printf(".globl main\n");
   printf("main:\n");
 
-  // 抽象構文木を下りながらコード生成
-  gen(node);
+  // プロローグ
+  // 変数26個分の領域を確保する
+  printf("  push rbp\n");
+  printf("  mov rbp, rsp\n");
+  printf("  sub rsp, 208\n");
 
-  // スタックトップに式全体の値が残っているはずなので
-  // それをRAXにロードして関数からの返り値とする
+  // 先頭の式から順にコード生成
+  for (int i = 0; code[i]; i++) {
+    gen(code[i]);
+
+    // 式の評価結果としてスタックに1つの値が残っているはずなので
+    // それをスタックトップから取り除くためのPOP命令を出力
+    printf("  pop rax\n");
+  }
+
+  // 最後の式の結果がRAXに残っているのでそれを返り値とする
+  printf("  mov rsp, rbp\n");
   printf("  pop rax\n");
   printf("  ret\n");
   return 0;
