@@ -31,7 +31,7 @@ void expect(char *op) {
   if (token->kind != TK_RESERVED ||
       strlen(op) != token->len ||
       memcmp(token->str, op, token->len))
-    error_at(token->str, "'%c'ではありません", op);
+    error_at(token->str, "'%c'ではありません", *op);
   token = token->next;
 }
 
@@ -111,6 +111,10 @@ Token *tokenize() {
     if (isdigit(*p)) {
       cur = new_token(TK_NUM, cur, p, 0);
       char *q = p;
+      // TODO: strtolのエラーチェック
+      //       strtolによってpが進むため，例えばuser_input="0;"の場合
+      //       &pは';'の位置でなければならないが，現状では'0'の位置のまま.
+      //       これによりcur->lenの値が正しくない.
       cur->val = strtol(p, &p, 10);
       cur->len = p - q;
       continue;
