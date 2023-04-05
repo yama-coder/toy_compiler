@@ -61,9 +61,10 @@ int main(int argc, char **argv) {
     printf("  pop rax\n");
   }
 
+  // エピローグ
   // 最後の式の結果がRAXに残っているのでそれを返り値とする
   printf("  mov rsp, rbp\n");
-  printf("  pop rax\n");
+  printf("  pop rbp\n");
   printf("  ret\n");
   return 0;
 }
